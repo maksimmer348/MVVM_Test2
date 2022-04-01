@@ -1,12 +1,27 @@
-﻿<Window x:Class="MVVM_Test2.MainWindow"
+﻿<!-- через Binding подключаем свойство Title из MainWindowVM -->
+<Window x:Class="MVVM_Test2.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVM_Test2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="{Binding Title}" Height="450" Width="800">
+    
+    <!-- указываем DC для всего окна, все визуальные эл будут иметь тот же DC если внутри эл не будет указан иной DC -->
+    <Window.DataContext>
+        
+        <!-- используя local (те пространство имен в ктором находитися MainWindowVM),  -->
+        <!-- подключаем к текущему DC, MainWindowVM (вью модель сделаная для этого окна), теперь в Binding мы можем -->
+        <!-- использовать публичные свойства нашей MainWindowVM -->
+        <local:MainWindowVM/>
+        
+    </Window.DataContext>
     <Grid>
-
+        <StackPanel>
+           <!-- через Binding подключаем свойство Title из MainWindowVM, UpdateSourceTrigger выставляем
+            мгновенное обновление всех привязанных к свойству Title примеников-->
+           <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
     </Grid>
 </Window>
