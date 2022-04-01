@@ -11,6 +11,7 @@ public class MainWindowVM : BaseVM
 
     private string title;
 
+
     /// <summary>
     /// Заголовок окна
     /// </summary>
@@ -29,5 +30,19 @@ public class MainWindowVM : BaseVM
         set => Set(ref title, value);
     }
 
+private int status;
+
+public int Status
+{
+    get => status;
+    set
+    {
+        Set(ref status, value);
+        if (status > 10) Title = "Не готов";
+        else Title = "Готов";
+    }
+}
     #endregion
+
+  
 }
