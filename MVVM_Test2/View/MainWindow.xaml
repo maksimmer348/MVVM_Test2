@@ -29,11 +29,11 @@
 
             <StatusBar DockPanel.Dock="Bottom">
                 <StatusBarItem Width="50">
-                    <TextBlock Text="{Binding Title}"/>
+                    <TextBlock Text="{Binding Title}" />
                 </StatusBarItem>
                 <StatusBarItem>
                     <ProgressBar Width="100" Height="15" Value="{Binding Title}"></ProgressBar>
-              </StatusBarItem>
+                </StatusBarItem>
                 <StatusBarItem>
                     <Slider Width="300" Value="{Binding  Status}" Maximum="100" TickFrequency="10"
                             TickPlacement="TopLeft" IsSnapToTickEnabled="True" />
@@ -48,16 +48,22 @@
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150*" />  
+                            <ColumnDefinition Width="150*" />
                             <ColumnDefinition Width="150*" />
                         </Grid.ColumnDefinitions>
-                        
+
                         <!-- через Binding подключаем свойство Title из MainWindowVM, UpdateSourceTrigger выставляем
                                 мгновенное обновление всех привязанных к свойству Title примеников-->
-                        <TextBox Grid.Column="0" FontSize="20"
-                                 Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                        <DockPanel>
+                            <TextBox DockPanel.Dock="Top" FontSize="20"
+                                     Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                            <!-- привязка команды к кнопе через Binding -->
+                            <Button Command="{Binding CloseAppCmd}">
+                                <Button.Content>Exit</Button.Content>
+                            </Button>
+                        </DockPanel>
                         <Rectangle Grid.Row="0" Grid.Column="2" Fill="Azure" Stroke="Coral"></Rectangle>
-                        <GridSplitter Grid.Column="0" Grid.RowSpan = "2" Width="4"></GridSplitter>
+                        <GridSplitter Grid.Column="0" Grid.RowSpan="2" Width="4"></GridSplitter>
                     </Grid>
                 </TabItem>
                 <TabItem Header="2"></TabItem>
