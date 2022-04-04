@@ -59,7 +59,11 @@
                                      Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
                             <!-- привязка команды к кнопе через Binding -->
                             <Button Command="{Binding CloseAppCmd}">
-                                <Button.Content>Exit</Button.Content>
+                                <Button.Content>Exit(cmd in VM)</Button.Content>
+                            </Button>
+                            <Button>
+                                <Button.Command><local:CloseAppCmd/></Button.Command>
+                                <Button.Content>Exit(cmd in Class)</Button.Content>
                             </Button>
                         </DockPanel>
                         <Rectangle Grid.Row="0" Grid.Column="2" Fill="Azure" Stroke="Coral"></Rectangle>

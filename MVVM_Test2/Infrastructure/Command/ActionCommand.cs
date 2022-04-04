@@ -1,7 +1,6 @@
 ﻿using System;
-using MVVM_Test2.Command.Base;
 
-namespace MVVM_Test2.Command;
+namespace MVVM_Test2;
 
 //Основной обработчик команд
 public class ActionCommand : BaseCommand

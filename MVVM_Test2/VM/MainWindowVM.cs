@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using MVVM_Test2.Command;
+using MVVM_Test2;
 
 namespace MVVM_Test2;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace MVVM_Test2.Command.Base;
+namespace MVVM_Test2;
 
 public abstract class BaseCommand : ICommand
 {
@@ -11,6 +11,7 @@ public abstract class BaseCommand : ICommand
     {
         //событие передает управленеие классом CommandManager когда чтот происходит
         add => CommandManager.RequerySuggested += value;
+        //когда ко манда выполненя просиходит отписка от события команды
         remove =>CommandManager.RequerySuggested -= value;
     }
     
