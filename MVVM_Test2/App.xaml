@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:MVVM_Test2"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="Infrastructure/Styles/Controls.xaml"></ResourceDictionary>
     </Application.Resources>
 </Application>

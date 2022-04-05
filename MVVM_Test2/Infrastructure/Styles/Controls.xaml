@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MVVM_Test2">
+    <!-- <Style x:Key="Style" TargetType="Button"> -->
+    <!--     ~1~ устанговитиь сеттер команды @1@ -->
+    <!--     <Setter Property="Command"> -->
+    <!--         <Setter.Value> -->
+    <!--             ~1~ добвить ко манлду и з пространства имен @1@ -->
+    <!--             <local:CloseAppCmd /> -->
+    <!--         </Setter.Value> -->
+    <!--     </Setter> -->
+    <!-- </Style> -->
+
+    <Style x:Key="StyleCmdClose" TargetType="Button">
+        <Setter Property="Command">
+            <Setter.Value>
+                <local:CloseAppCmd></local:CloseAppCmd>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -7,4 +7,9 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FontAwesome5" Version="2.1.6" />
+      <PackageReference Include="MaterialDesignThemes" Version="4.5.0-ci133" />
+    </ItemGroup>
+
 </Project>
