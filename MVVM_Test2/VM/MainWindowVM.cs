@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using MVVM_Test2;
 
@@ -9,6 +10,8 @@ namespace MVVM_Test2;
 /// </summary>
 public class MainWindowVM : BaseVM
 {
+    
+    
     public MainWindowVM()
     {
 
@@ -57,8 +60,7 @@ public class MainWindowVM : BaseVM
     #region Свойства
 
     //создаем свойство и подцепляем к нему визуальный эл
-
-    #region Заголовок окна
+    
 
     private string title;
 
@@ -93,8 +95,8 @@ public class MainWindowVM : BaseVM
             else Title = "Готов";
         }
     }
-
+    
     #endregion
-
-    #endregion
+    
+    
 }
