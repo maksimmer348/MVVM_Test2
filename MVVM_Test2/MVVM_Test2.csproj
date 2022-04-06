@@ -10,7 +10,7 @@
     <ItemGroup>
       <PackageReference Include="FontAwesome5" Version="2.1.6" />
       <PackageReference Include="MaterialDesignThemes" Version="4.5.0-ci133" />
-      <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
+      <PackageReference Include="OxyPlot.Wpf" Version="2.0.0" />
     </ItemGroup>
 
 </Project>

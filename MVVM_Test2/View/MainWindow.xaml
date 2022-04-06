@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVM_Test2"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
+       xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="800">
 
@@ -103,8 +104,22 @@
                         <GridSplitter Grid.Column="0" Grid.RowSpan="2" Width="4"></GridSplitter>
                     </Grid>
                 </TabItem>
-                <TabItem Header="2"></TabItem>
+                <TabItem Header="График">
+                    <Grid>
+                        <oxy:Plot>
+                            <oxy:Plot.Axes>
+                                <oxy:LinearAxis Position="Left"/>
+                                <oxy:LinearAxis Position="Bottom"/>
+                            </oxy:Plot.Axes>
+                            <oxy:LineSeries Color="Red" ItemsSource="{Binding TestDataPoints}" 
+                                            DataFieldX="XValue" DataFieldY="YValue"/>
+                        </oxy:Plot>
+                    </Grid>
+                   
+                </TabItem>
             </TabControl>
         </DockPanel>
+        
+        
     </Grid>
 </Window>

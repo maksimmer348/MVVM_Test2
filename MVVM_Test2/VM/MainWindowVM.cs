@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using MVVM_Test2;
@@ -10,16 +11,23 @@ namespace MVVM_Test2;
 /// </summary>
 public class MainWindowVM : BaseVM
 {
-    
-    
     public MainWindowVM()
     {
-
         #region Команды
-        
+
         CloseAppCmd = new ActionCommand(OnCloseAppCmdExecuted, CanCloseAppCmdExecuted);
 
         #endregion
+
+        var dataPoints = new List<DataPoint>((int) (360 / 0.1));
+        for (double x = 0; x < 360; x += 0.1)
+        {
+            const double TO_RADIUS = Math.PI / 180;
+            var y = Math.Sin(x * TO_RADIUS);
+            
+            dataPoints.Add(new DataPoint(){XValue = x,YValue = y});
+        }
+        TestDataPoints = dataPoints;
     }
 
     #region Команды
@@ -29,9 +37,9 @@ public class MainWindowVM : BaseVM
     /// <summary>
     /// Свойство команды закрытия окна (те сама команда)
     /// </summary>
-    public ICommand CloseAppCmd { get;}
+    public ICommand CloseAppCmd { get; }
 
-    
+
     /// <summary>
     /// Выполнение логики команды
     /// </summary>
@@ -40,7 +48,7 @@ public class MainWindowVM : BaseVM
     {
         Application.Current.Shutdown();
     }
-    
+
     /// <summary>
     /// Доступность команды для выполнения
     /// </summary>
@@ -52,15 +60,14 @@ public class MainWindowVM : BaseVM
         return true;
     }
 
+    #endregion
 
     #endregion
-   
-    #endregion
-    
+
     #region Свойства
 
     //создаем свойство и подцепляем к нему визуальный эл
-    
+
 
     private string title;
 
@@ -85,6 +92,7 @@ public class MainWindowVM : BaseVM
 
     private int status;
 
+
     public int Status
     {
         get => status;
@@ -95,8 +103,19 @@ public class MainWindowVM : BaseVM
             else Title = "Готов";
         }
     }
-    
+
+    //если не планируется в будущем удалять или добавлять точки то можно ограничится IEnumerable 
+    //если планируется то ObservableColection
+
+    private IEnumerable<DataPoint> testDataPoints;
+
+    /// <summary>
+    /// Тестовый набор данных для визуализации графиков
+    /// </summary>
+    public IEnumerable<DataPoint> TestDataPoints
+    {
+        get => testDataPoints;
+        set => Set(ref testDataPoints, value);
+    }
     #endregion
-    
-    
 }
