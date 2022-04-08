@@ -144,6 +144,9 @@ public class MainWindowVM : BaseVM
     private int status;
 
 
+    /// <summary>
+    /// Сатус Ползунка
+    /// </summary>
     public int Status
     {
         get => status;
@@ -176,6 +179,9 @@ public class MainWindowVM : BaseVM
 
     private int selectedPageIndex = 2;
 
+    /// <summary>
+    /// ВЫбранная вкладка
+    /// </summary>
     public int SelectedPageIndex
     {
         get => selectedPageIndex;
@@ -196,7 +202,30 @@ public class MainWindowVM : BaseVM
         }
     }
 
+
+    #region Группы
+
+    /// <summary>
+    /// Список групп
+    /// </summary>
     public ObservableCollection<Group> Groups { get; set; }
+
+    #region Выбранная группа
+
+    private Group selecGroup;
+
+    /// <summary>
+    /// ВЫбранная группа
+    /// </summary>
+    public Group SelectGroup
+    {
+        get => selecGroup;
+        set => Set(ref selecGroup, value);
+    }
+
+    #endregion
+
+    #endregion
 
     #endregion
 }

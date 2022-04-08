@@ -139,18 +139,59 @@
                     <Grid ShowGridLines="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="250"></ColumnDefinition>
-                            <ColumnDefinition ></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        
+
                         <GroupBox Header="Группы">
-                            <!-- DisplayMemberPath отобразит указанное свойство жлементов в ItemsSource в данном случае Group.Name -->
-                            <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name"></ListBox>
+                            <!-- DisplayMemberPath отобразит указанное свойство элементов в ItemsSource в данном случае Group.Name  -->
+                            <!-- SelectedItem привязывает свойство SelectGroup к текущей выыбранной группе-->
+                            <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name"
+                                     SelectedItem="{Binding SelectGroup}">
+                            </ListBox>
                         </GroupBox>
-                        
-                        <GroupBox Header="Студенты" Grid.Column="1">
-                          <!-- какие виды колонок нужны какие параметрвы как каим видам их привязвать и тд 
+                        <!-- FallbackValue используется когда привязка не может вернуть значение, TargetNullValue если  -->
+                        <!-- значние источника null вернет заданное значение в даном случае "грппа не выбрана" -->
+                        <GroupBox
+                            Header="{Binding SelectGroup.Name, 
+                        FallbackValue='Группа не выбрана', TargetNullValue='Группа не выыбрана'}"
+                            HeaderStringFormat="Студенты группы {0}" Grid.Column="1">
+                            <!-- DataGrid какие виды колонок нужны какие параметрвы как каим видам их привязвать и тд 
                           кастомизироват ячейки, он оч быстрый-->
-                            <DataGrid ></DataGrid>
+
+                            <!-- AutoGenerateColumns не позволяет датагриду самостоятьльно генериировть колнки  -->
+                            <DataGrid ItemsSource="{Binding SelectGroup.Students}" AutoGenerateColumns="False"
+                                      IsReadOnly="True">
+                                <!-- тк к свойству ItemsSource текущего датаггрида привзяанаы студенты выбранной группы, то  -->
+                                <!-- что является типом данных внутри датагрид -->
+                                <DataGrid.Columns>
+                                    <!--DataGridTextColumn универсальный и позволят отображать данные в текстовм представлении -->
+                                    <!-- могут быть в том числ и численые данные, конвертация автоматическая -->
+
+                                    <!-- Binding подразумеваеит к чему будет привзяка исходя из ItemsSource. Те Name в данном -->
+                                    <!--контестке будет SelectGroup.Students.Name -->
+                                    <!-- проще говоря мы сейчас в контесте Students -->
+                                    <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" />
+                                    <DataGridTextColumn Header="Имя" Binding="{Binding Name}" />
+                                    <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic }" />
+                                    <!-- StringFormat=dd.MM.yyy устанавливаем форматировние даты на стандартную русскую вида Дата.Месяц.Год -->
+                                    <DataGridTextColumn Header="Дата Рождения" Binding="{Binding Birthday, StringFormat=dd.MM.yyy}" />
+                                    <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" />
+                                    
+                                    <!-- Чтобы поднятся выше в конексте данных например на уровень где контестом данных является SelectGroup -->
+                                    <!-- нужно использовать это, RelativeSource ={RelativeSource AncestorType=GroupBox}} -->
+                                    <!-- что поднимет нас к контесту данныых групбокса/датагрида котрым и является SelectGroup(контекстом даных всмысле)-->
+                                    <DataGridTextColumn Header="Группа"
+                                                        Binding="{Binding DataContext.SelectGroup.Name, 
+                                                        RelativeSource = {RelativeSource AncestorType=DataGrid}}" />
+                                    
+                                    <!-- а так мы поднимемся на уровень ока чтобы получить Status из контекста данных окна -->
+                                    <DataGridTextColumn Header="Уровень"
+                                                        Binding="{Binding DataContext.Status, 
+                                                        RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                    
+                                </DataGrid.Columns>
+
+                            </DataGrid>
                         </GroupBox>
                     </Grid>
                 </TabItem>
