@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVM_Test2"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
-       xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="800">
 
@@ -21,7 +21,7 @@
     <!-- добавили в окно ресурсы в данном случее класс команды CloseAppCmd-->
     <Window.Resources>
         <local:CloseAppCmd x:Key="CloseAppCmd"></local:CloseAppCmd>
-        
+
     </Window.Resources>
     <Grid>
         <DockPanel>
@@ -31,6 +31,21 @@
                     <MenuItem Header="Выход"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Помощь"></MenuItem>
+                <MenuItem Command="{Binding ChangeTab}" CommandParameter="-1">
+                    <MenuItem.Header>
+                        <fa:ImageAwesome Height="12" Icon="Regular_ArrowAltCircleLeft" />
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Command="{Binding ChangeTab}" CommandParameter="+1">
+                    <MenuItem.Header>
+                        <fa:ImageAwesome Height="12" Icon="Regular_ArrowAltCircleRight" />
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Header="{Binding SelectedPageIndex}">
+
+                </MenuItem>
             </Menu>
 
             <StatusBar DockPanel.Dock="Bottom">
@@ -46,7 +61,8 @@
 
                 </StatusBarItem>
             </StatusBar>
-            <TabControl>
+            <!-- по сути это список а TabItem это эжлменты списка -->
+            <TabControl SelectedIndex="{Binding SelectedPageIndex}">
                 <TabItem HorizontalAlignment="Center">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
@@ -108,18 +124,39 @@
                     <Grid>
                         <oxy:Plot>
                             <oxy:Plot.Axes>
-                                <oxy:LinearAxis Position="Left"/>
-                                <oxy:LinearAxis Position="Bottom"/>
+                                <oxy:LinearAxis Position="Left" />
+                                <oxy:LinearAxis Position="Bottom" />
                             </oxy:Plot.Axes>
-                            <oxy:LineSeries Color="Red" ItemsSource="{Binding TestDataPoints}" 
-                                            DataFieldX="XValue" DataFieldY="YValue"/>
+
+                            <oxy:LineSeries Color="Red" ItemsSource="{Binding TestDataPoints}"
+                                            DataFieldX="XValue" DataFieldY="YValue" />
                         </oxy:Plot>
                     </Grid>
-                   
+
+                </TabItem>
+
+                <TabItem Header="Студенты">
+                    <Grid ShowGridLines="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition ></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        
+                        <GroupBox Header="Группы">
+                            <!-- DisplayMemberPath отобразит указанное свойство жлементов в ItemsSource в данном случае Group.Name -->
+                            <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name"></ListBox>
+                        </GroupBox>
+                        
+                        <GroupBox Header="Студенты" Grid.Column="1">
+                          <!-- какие виды колонок нужны какие параметрвы как каим видам их привязвать и тд 
+                          кастомизироват ячейки, он оч быстрый-->
+                            <DataGrid ></DataGrid>
+                        </GroupBox>
+                    </Grid>
                 </TabItem>
             </TabControl>
         </DockPanel>
-        
-        
+
+
     </Grid>
 </Window>
