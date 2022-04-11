@@ -8,7 +8,7 @@
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="450" Width="800">
+        Title="{Binding Title}" Height="450" Width="1000">
 
     <!-- указываем DC для всего окна, все визуальные эл будут иметь тот же DC если внутри эл не будет указан иной DC -->
     <Window.DataContext>
@@ -61,7 +61,7 @@
 
                 </StatusBarItem>
             </StatusBar>
-            <!-- по сути это список а TabItem это эжлменты списка -->
+            <!-- по сути это список а TabItem это элменты списка -->
             <TabControl SelectedIndex="{Binding SelectedPageIndex}">
                 <TabItem HorizontalAlignment="Center">
                     <TabItem.Header>
@@ -146,7 +146,7 @@
                             <!-- DisplayMemberPath отобразит указанное свойство элементов в ItemsSource в данном случае Group.Name  -->
                             <!-- SelectedItem привязывает свойство SelectGroup к текущей выыбранной группе-->
                             <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name"
-                                     SelectedItem="{Binding SelectGroup}">
+                                     SelectedItem="{Binding SelectGroup}"  SelectedIndex="1">
                             </ListBox>
                         </GroupBox>
                         <!-- FallbackValue используется когда привязка не может вернуть значение, TargetNullValue если  -->
@@ -159,8 +159,13 @@
                           кастомизироват ячейки, он оч быстрый-->
 
                             <!-- AutoGenerateColumns не позволяет датагриду самостоятьльно генериировть колнки  -->
+                            <!-- HorizontalGridLinesBrush и verical настраивает цвет гор и верт линий разметки, Transparent безцветный режим -->
+                            <!-- аналогично ему {x:Null} -->
+                            <!-- GridLinesVisibility="Vertical" показывать только верт линии -->
+                            <!-- AlternatingRowBackground задает цвет фона в чередующейся строках -->
                             <DataGrid ItemsSource="{Binding SelectGroup.Students}" AutoGenerateColumns="False"
-                                      IsReadOnly="True">
+                                      IsReadOnly="True" GridLinesVisibility="Vertical" VerticalGridLinesBrush="Blue" 
+                                      AlternatingRowBackground="LightBlue">
                                 <!-- тк к свойству ItemsSource текущего датаггрида привзяанаы студенты выбранной группы, то  -->
                                 <!-- что является типом данных внутри датагрид -->
                                 <DataGrid.Columns>
@@ -168,13 +173,27 @@
                                     <!-- могут быть в том числ и численые данные, конвертация автоматическая -->
 
                                     <!-- Binding подразумеваеит к чему будет привзяка исходя из ItemsSource. Те Name в данном -->
-                                    <!--контестке будет SelectGroup.Students.Name -->
-                                    <!-- проще говоря мы сейчас в контесте Students -->
+                                    <!--контестке будет SelectGroup.Students.Name, проще говоря мы сейчас в контесте Students -->
                                     <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" />
                                     <DataGridTextColumn Header="Имя" Binding="{Binding Name}" />
                                     <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic }" />
+                                    
                                     <!-- StringFormat=dd.MM.yyy устанавливаем форматировние даты на стандартную русскую вида Дата.Месяц.Год -->
-                                    <DataGridTextColumn Header="Дата Рождения" Binding="{Binding Birthday, StringFormat=dd.MM.yyy}" />
+                                    <!-- <DataGridTextColumn Header="Дата Рождения" Binding="{Binding Birthday, StringFormat=dd.MM.yyy}" /> -->
+                                    
+                                    <!-- DataGridTemplateColumn позволяет полность сконфигуриировать строку самостоятельно -->
+                                    <DataGridTemplateColumn Header="Дата рождения">
+                                        <!-- CellTemplate создает собственный шаблон ячейки -->
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <!-- DataTemplate внутри него будет применена описаная нами разметка, чтобы нарисовать этот эл на экране -->
+                                            <!-- DataType если указать тип то иде будет подсказывать, привязки к данным-->
+                                            <DataTemplate DataType="local:Student">
+                                               <!-- отобажает выпадающий календарь с датами -->
+                                                <DatePicker SelectedDate="{Binding Birthday}"></DatePicker>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    
                                     <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" />
                                     
                                     <!-- Чтобы поднятся выше в конексте данных например на уровень где контестом данных является SelectGroup -->
@@ -188,7 +207,7 @@
                                     <DataGridTextColumn Header="Уровень"
                                                         Binding="{Binding DataContext.Status, 
                                                         RelativeSource={RelativeSource AncestorType=Window}}"/>
-                                    
+                                    <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="*"></DataGridTextColumn>
                                 </DataGrid.Columns>
 
                             </DataGrid>

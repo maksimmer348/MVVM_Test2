@@ -52,6 +52,7 @@ public class MainWindowVM : BaseVM
             Patronymic = $"Patronymic {studentIndex++}",
             Birthday = DateTime.Now,
             Rating = 0,
+            Description = $"Описание {studentIndex}"
         });
 
         //если добавлять по одной группе в ObservableCollection то это будет долго на каждую группу он будет 
