@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using MVVM_Test2;
 
@@ -68,6 +69,20 @@ public class MainWindowVM : BaseVM
 
         //дальше разместим колллекцию в observable тем самым оно создаство гораздо быстрее
         Groups = new ObservableCollection<Group>(groups);
+
+
+        var dataList = new List<object>();
+
+        //создаем разнордный набор данных
+        var group = Groups[1];
+
+        dataList.Add("Hello");
+        dataList.Add(12);
+        dataList.Add(group);
+        dataList.Add(group.Students[0]);
+
+        this.CompositeCollection = dataList.ToArray();
+       
     }
 
     #region Команды
@@ -191,7 +206,7 @@ public class MainWindowVM : BaseVM
         {
             if (value < 0)
             {
-                value = 1;
+                value = 3;
             }
 
             if (value > 3)
@@ -204,7 +219,7 @@ public class MainWindowVM : BaseVM
     }
 
 
-    #region Группы
+    #region Группы и студенты
 
     /// <summary>
     /// Список групп
@@ -225,6 +240,25 @@ public class MainWindowVM : BaseVM
     }
 
     #endregion
+
+    #endregion
+
+    #region Разнородныый набор данных
+
+    //создадим список любых эл
+    public object[] CompositeCollection { get; }
+
+    
+    private object selectedCompositeValue;
+
+    /// <summary>
+    /// выбранный разнорднный элемент
+    /// </summary>
+    public object SelectedCompositeValue
+    {
+        get => selectedCompositeValue;
+        set => Set(ref selectedCompositeValue, value);
+    }
 
     #endregion
 

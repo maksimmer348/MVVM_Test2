@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:MVVM_Test2"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         Title="{Binding Title}" Height="450" Width="1000">
 
@@ -46,6 +47,7 @@
                 <MenuItem Header="{Binding SelectedPageIndex}">
 
                 </MenuItem>
+                <!-- <MenuItem Header="{Binding RelativeSource={RelativeSource ={x:Name ListView}}, Path=Items.Count, Mode=OneWay}"/> -->
             </Menu>
 
             <StatusBar DockPanel.Dock="Bottom">
@@ -63,6 +65,7 @@
             </StatusBar>
             <!-- по сути это список а TabItem это элменты списка -->
             <TabControl SelectedIndex="{Binding SelectedPageIndex}">
+
                 <TabItem HorizontalAlignment="Center">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
@@ -145,8 +148,24 @@
                         <GroupBox Header="Группы">
                             <!-- DisplayMemberPath отобразит указанное свойство элементов в ItemsSource в данном случае Group.Name  -->
                             <!-- SelectedItem привязывает свойство SelectGroup к текущей выыбранной группе-->
-                            <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name"
-                                     SelectedItem="{Binding SelectGroup}"  SelectedIndex="1">
+                            <!-- <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name" -->
+                            <!--          SelectedItem="{Binding SelectGroup}" SelectedIndex="1"> -->
+                            <!-- </ListBox> -->
+
+                            <!-- для однотипных эл списка можно применить следующию конструкциюю -->
+                            <ListBox ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectGroup}"
+                                     SelectedIndex="1">
+                                <!-- ItemTemplate задает шаблон DataTemplate для каждого из эл списка -->
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="local:Group">
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- демонстрирует Name для каждой Group -->
+                                            <TextBlock Text="{Binding Name}" />
+                                            <!-- демонстрирует количество Students для каждой Group -->
+                                            <TextBlock Text="{Binding Students.Count, StringFormat={} [{0}]}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
                             </ListBox>
                         </GroupBox>
                         <!-- FallbackValue используется когда привязка не может вернуть значение, TargetNullValue если  -->
@@ -164,7 +183,8 @@
                             <!-- GridLinesVisibility="Vertical" показывать только верт линии -->
                             <!-- AlternatingRowBackground задает цвет фона в чередующейся строках -->
                             <DataGrid ItemsSource="{Binding SelectGroup.Students}" AutoGenerateColumns="False"
-                                      CanUserDeleteRows="False" GridLinesVisibility="Vertical" VerticalGridLinesBrush="Blue" 
+                                      CanUserDeleteRows="False" GridLinesVisibility="Vertical"
+                                      VerticalGridLinesBrush="Blue"
                                       AlternatingRowBackground="LightBlue">
                                 <!-- тк к свойству ItemsSource текущего датаггрида привзяанаы студенты выбранной группы, то  -->
                                 <!-- что является типом данных внутри датагрид -->
@@ -177,60 +197,61 @@
                                     <DataGridTextColumn Header="Фамилия" Binding="{Binding Surname}" />
                                     <DataGridTextColumn Header="Имя" Binding="{Binding Name}" />
                                     <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic }" />
-                                    
+
                                     <!-- StringFormat=dd.MM.yyy устанавливаем форматировние даты на стандартную русскую вида Дата.Месяц.Год -->
                                     <!-- <DataGridTextColumn Header="Дата Рождения" Binding="{Binding Birthday, StringFormat=dd.MM.yyy}" /> -->
-                                    
+
                                     <!-- DataGridTemplateColumn позволяет полность сконфигуриировать строку самостоятельно -->
                                     <DataGridTemplateColumn Header="Дата рождения">
                                         <!-- ~1~ CellTemplate создает собственный шаблон ячейки @1@ -->
                                         <!-- <DataGridTemplateColumn.CellTemplate> -->
-                                        <!--     ~1~ DataTemplate внутри него будет применена описаная нами разметка, чтобы нарисовать этот эл на экране @1@ -->
+                                        <!--     ~1~ DataTemplate внутри него будет применена описаная нами разметка, -->
+                                        <!--  чтобы нарисовать этот эл на экране @1@ (те он описывает визуальную структуру обьекта)-->
                                         <!--     ~1~ DataType если указать тип то иде будет подсказывать, привязки к данным@1@ -->
                                         <!--     <DataTemplate DataType="local:Student"> -->
                                         <!--        ~1~ отобажает выпадающий календарь с датами @1@ -->
                                         <!--         <DatePicker SelectedDate="{Binding Birthday}"></DatePicker> -->
                                         <!--     </DataTemplate> -->
                                         <!-- </DataGridTemplateColumn.CellTemplate> -->
-                                        
+
                                         <!-- так же можно настроить вид колонок для чтения и для радактиирования по разному -->
-                                        
+
                                         <!-- для чтения будет отображатся в виде текстблока -->
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate DataType="local:Student">
-                                                <TextBlock Text="{Binding Birthday, StringFormat=dd.MM.yyyy}"/>
+                                                <TextBlock Text="{Binding Birthday, StringFormat=dd.MM.yyyy}" />
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
-                                        
+
                                         <!-- для редактривания будет отбражстся в виде SelectedDate -->
                                         <DataGridTemplateColumn.CellEditingTemplate>
                                             <DataTemplate DataType="local:Student">
                                                 <DatePicker SelectedDate="{Binding Birthday}"></DatePicker>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellEditingTemplate>
-                                        
+
                                     </DataGridTemplateColumn>
-                                    
+
                                     <DataGridTextColumn Header="Рейтинг" Binding="{Binding Rating}" />
-                                    
+
                                     <!-- Чтобы поднятся выше в конексте данных например на уровень где контестом данных является SelectGroup -->
                                     <!-- нужно использовать это, RelativeSource ={RelativeSource AncestorType=GroupBox}} -->
                                     <!-- что поднимет нас к контесту данныых групбокса/датагрида котрым и является SelectGroup(контекстом даных всмысле)-->
                                     <DataGridTextColumn Header="Группа"
                                                         Binding="{Binding DataContext.SelectGroup.Name, 
                                                         RelativeSource = {RelativeSource AncestorType=DataGrid}}" />
-                                    
+
                                     <!-- а так мы поднимемся на уровень ока чтобы получить Status из контекста данных окна -->
                                     <DataGridTextColumn Header="Уровень"
                                                         Binding="{Binding DataContext.Status, 
-                                                        RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                                        RelativeSource={RelativeSource AncestorType=Window}}" />
                                     <DataGridTemplateColumn Header="Описание" Width="*">
-                                       <DataGridTemplateColumn.CellTemplate>
-                                           <DataTemplate DataType="local:Student">
-                                               <TextBlock Text="{Binding Description}"/>
-                                           </DataTemplate>
-                                       </DataGridTemplateColumn.CellTemplate>
-                                        
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate DataType="local:Student">
+                                                <TextBlock Text="{Binding Description}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+
                                         <DataGridTemplateColumn.CellEditingTemplate>
                                             <DataTemplate DataType="local:Student">
                                                 <TextBox Text="{Binding Description}"></TextBox>
@@ -240,6 +261,35 @@
                                 </DataGrid.Columns>
 
                             </DataGrid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Разнородные данные">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <!-- добявляем в ItemsSource список разнородных эл, SelectedItem будет установлен в свойство SelectedCompositeValue -->
+                        <!-- тк ListBox не знает как отбражать даные он просто вызывает у всех обьектов в себя добавленных ToString -->
+                        <ListBox ItemsSource="{Binding CompositeCollection}"
+                                 SelectedItem="{Binding SelectedCompositeValue}">
+                            <!--ItemTemplate конкретизиурет как будет отбражатся конкретные типы данных -->
+                            <ListBox.ItemTemplate>
+                                <!-- DataTemplate внутри него будет применена описаная нами разметка, -->
+                                <!-- чтобы нарисовать этот эл на экране (те он описывает визуальную структуру обьекта)-->
+                                <DataTemplate>
+                                    <!-- описываем как надо визуализировать наши обоьекты -->
+                                    <TextBlock Text="{Binding}" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <GroupBox Header="Выбарнный элемент" Grid.Column="1">
+                            <!-- теперь при выборе соотвествующего эл SelectedCompositeValue в групбоксе будут отбражатся их имена -->
+                            <!-- тк ContentControl не знает как отбражать даные он просто вызывает у всех обьектов в себя добавленных ToString -->
+                            <ContentControl Content="{Binding SelectedCompositeValue}">
+                            </ContentControl>
                         </GroupBox>
                     </Grid>
                 </TabItem>
