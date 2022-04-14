@@ -270,22 +270,51 @@
                             <ColumnDefinition Width="250" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <!-- при использтвании ресурсов нельзя использовать такие штуки как ItemTemplate например тк -->
-                        <!-- он переопределитьи отбражаемы значения по своему те исользует ToString к каждому эл -->
-                        
-                        <!-- DataTemplate DataType="{x:Type local:Group}" позволяет использовать заданные свойсвта классов из -->
-                        <!-- списка разнордных элментов в данном случае если встреится эл Group то всеми дочерними элментами Grid -->
-                        <!-- будет отображено Group.Name вместо применения ToString по умолчанию-->
-                        <Grid.Resources>
-                            <DataTemplate DataType="{x:Type local:Group}">
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                            <!-- аналогично пример с Group в случае эл типа Student будет покзаано Student.Name вметсо ToString -->
-                            <DataTemplate DataType="{x:Type local:Student}">
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </Grid.Resources>
-                        <GroupBox Header="Элементы">
+
+                        <GroupBox>
+
+                            <!-- при использтвании ресурсов нельзя использовать такие штуки как ItemTemplate например тк -->
+                            <!-- они переопределяют отбражаемые значения по своему те исользует ToString к каждому эл -->
+
+                            <!-- DataTemplate DataType="{x:Type local:Group}" позволяет использовать заданные свойсвта классов из -->
+                            <!-- списка разнордных элментов в данном случае если встреится эл Group то всеми дочерними элментами Grid -->
+                            <!-- будет отображено Group.Name вместо применения ToString по умолчанию-->
+                            <GroupBox.Resources>
+
+                                <DataTemplate DataType="{x:Type local:Group}">
+                                    <TextBlock Text="{Binding Name , StringFormat=Группа {0}}" />
+                                </DataTemplate>
+
+                                <!-- аналогично пример с Group в случае эл типа Student будет покзаано Student.Name вметсо ToString -->
+                                <DataTemplate DataType="{x:Type local:Student}">
+                                    <TextBlock Text="{Binding Name, StringFormat=Студент {0}}" />
+                                </DataTemplate>
+
+                                <DataTemplate DataType="{x:Type system:String}">
+                                    <!-- TextBlock можно развернуть и компоновать след способом -->
+                                    <!-- Run задает стиль внутри дочернего эл в данном случае это текст внутри текстблока-->
+                                    <TextBlock Text="{Binding StringFormat='{}{0} '}">
+                                        <Run Foreground="Brown" FontWeight="Bold"> Строка: </Run>
+                                        <TextBlock Text="{Binding StringFormat={} {0}}"></TextBlock>
+                                    </TextBlock>
+                                </DataTemplate>
+
+                                <DataTemplate DataType="{x:Type system:Int32}">
+                                    <!-- TextBlock можно развернуть и компоновать след способом -->
+                                    <!-- Run задает стиль внутри дочернего эл -->
+                                    <TextBlock Text="{Binding }">
+                                        <Run Foreground="Blue" FontWeight="Regular"> Число:  </Run>
+                                        <TextBlock Text="{Binding  StringFormat={} {0}}"></TextBlock>
+                                    </TextBlock>
+                                </DataTemplate>
+
+                            </GroupBox.Resources>
+
+
+                            <GroupBox.Header>
+                                <TextBlock Text="Элементы" />
+                            </GroupBox.Header>
+
                             <!-- добявляем в ItemsSource список разнородных эл, SelectedItem будет установлен в свойство SelectedCompositeValue -->
                             <!-- тк ListBox не знает как отбражать даные он просто вызывает у всех обьектов в себя добавленных ToString -->
                             <ListBox ItemsSource="{Binding CompositeCollection}"
@@ -301,7 +330,20 @@
                                 <!-- </ListBox.ItemTemplate> -->
                             </ListBox>
                         </GroupBox>
-                        <GroupBox Header="Выбарнный элемент" Grid.Column="1">
+
+                        <GroupBox Grid.Column="1">
+                            <GroupBox.Resources>
+                                <DataTemplate DataType="{x:Type system:Int32}">
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
+                                               Foreground="Aqua" Text="{Binding StringFormat=Число: {0}}">
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GroupBox.Resources>
+
+                            <GroupBox.Header>
+                                <TextBlock Text="Выбарнный элемент" />
+                            </GroupBox.Header>
+
                             <!--ContentControl с его помощьюю теперь при выборе соотвествующего эл SelectedCompositeValue в групбоксе будут -->
                             <!-- отбражатся их имена тк ContentControl не знает как отбражать даные он просто вызывает у всех обьектов в себя  -->
                             <!-- добавленных ToString (Student.ToString(), елси переопредеить это у студента можно полуиччить другое значение)-->
