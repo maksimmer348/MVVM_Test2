@@ -145,27 +145,38 @@
                         </Grid.ColumnDefinitions>
 
                         <GroupBox Header="Группы">
-                            <!-- DisplayMemberPath отобразит указанное свойство элементов в ItemsSource в данном случае Group.Name  -->
-                            <!-- SelectedItem привязывает свойство SelectGroup к текущей выыбранной группе-->
-                            <!-- <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name" -->
-                            <!--          SelectedItem="{Binding SelectGroup}" SelectedIndex="1"> -->
-                            <!-- </ListBox> -->
+                            <DockPanel>
+                                <!-- Rows="1" означает что все эл в этой панели будут разсполжеен горзионтально и им будет -->
+                                <!-- задана оддиноаковая ширина -->
+                                <UniformGrid DockPanel.Dock="Bottom" Rows="1">
+                                    <Button Content="+" Margin="3" Command="{Binding CreateNewGroupCmd}"/>
+                                    <Button Content="-" Margin="3" Command="{Binding DeleteGroupCmd}"
+                                            CommandParameter="{Binding SelectGroup}"/>
+                                </UniformGrid>
+                                
+                                <!-- DisplayMemberPath отобразит указанное свойство элементов в ItemsSource в данном случае Group.Name  -->
+                                <!-- SelectedItem привязывает свойство SelectGroup к текущей выыбранной группе-->
+                                <!-- <ListBox ItemsSource="{Binding Groups}" DisplayMemberPath="Name" -->
+                                <!--          SelectedItem="{Binding SelectGroup}" SelectedIndex="1"> -->
+                                <!-- </ListBox> -->
 
-                            <!-- для однотипных эл списка можно применить следующию конструкциюю -->
-                            <ListBox ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectGroup}"
-                                     SelectedIndex="1">
-                                <!-- ItemTemplate задает шаблон DataTemplate для каждого из эл списка -->
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate DataType="local:Group">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!-- демонстрирует Name для каждой Group -->
-                                            <TextBlock Text="{Binding Name}" />
-                                            <!-- демонстрирует количество Students для каждой Group -->
-                                            <TextBlock Text="{Binding Students.Count, StringFormat={} [{0}]}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                                <!-- для однотипных эл списка можно применить следующию конструкциюю -->
+                                <ListBox DockPanel.Dock="Top" ItemsSource="{Binding Groups}"
+                                         SelectedItem="{Binding SelectGroup}">
+                                    <!-- ItemTemplate задает шаблон DataTemplate для каждого из эл списка -->
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="local:Group">
+                                            <StackPanel Orientation="Horizontal">
+                                                <!-- демонстрирует Name для каждой Group -->
+                                                <TextBlock Text="{Binding Name}" />
+                                                <!-- демонстрирует количество Students для каждой Group -->
+                                                <TextBlock Text="{Binding Students.Count, StringFormat={} [{0}]}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                            </DockPanel>
                         </GroupBox>
                         <!-- FallbackValue используется когда привязка не может вернуть значение, TargetNullValue если  -->
                         <!-- значние источника null вернет заданное значение в даном случае "грппа не выбрана" -->

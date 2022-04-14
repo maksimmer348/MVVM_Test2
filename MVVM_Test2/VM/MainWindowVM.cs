@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
-using MVVM_Test2;
 
 namespace MVVM_Test2;
 
@@ -14,14 +13,39 @@ namespace MVVM_Test2;
 /// </summary>
 public class MainWindowVM : BaseVM
 {
+    #region Description
+
+    private int neeee;
+
+    /// <summary>
+    /// Summary
+    /// </summary>
+    public int Neeee
+    {
+        get => neeee;
+        set => Set(ref neeee, value);
+    }
+
+    #endregion
+
     public MainWindowVM()
     {
+        Console.WriteLine();
+
+        int i = 10;
+
+        Console.WriteLine(i);
+
         #region Команды
 
         CloseAppCmd = new ActionCommand(OnCloseAppCmdExecuted, CanCloseAppCmdExecuted);
-
+        
         ChangeTab = new ActionCommand(OnChangeTabExecuted, CanChangeTabExecuted);
 
+        CreateNewGroupCmd = new ActionCommand(OnCreateNewGroupCmdExecuted, CanCreateNewGroupCmdExecuted);
+
+        DeleteGroupCmd = new ActionCommand(OnDeleteGroupCmdExecuted, CanDeleteGroupCmdExecuted);
+        
         #endregion
 
         #region График
@@ -46,7 +70,7 @@ public class MainWindowVM : BaseVM
         #endregion
 
         var studentIndex = 1;
-        var students = Enumerable.Range(1, 10).Select(i => new Student()
+        var students = Enumerable.Range(1, 10).Select(_ => new Student()
         {
             Name = $"Name {studentIndex}",
             Surname = $"Surname {studentIndex}",
@@ -82,12 +106,11 @@ public class MainWindowVM : BaseVM
         dataList.Add(group.Students[0]);
 
         this.CompositeCollection = dataList.ToArray();
-       
     }
 
     #region Команды
 
-    #region Команда закрытия окна
+    #region Закрытия окна
 
     /// <summary>
     /// Свойство команды закрытия окна (те сама команда)
@@ -104,6 +127,7 @@ public class MainWindowVM : BaseVM
         Application.Current.Shutdown();
     }
 
+
     /// <summary>
     /// Доступность команды для выполнения
     /// </summary>
@@ -117,9 +141,11 @@ public class MainWindowVM : BaseVM
 
     #endregion
 
+    #region Смена вкладки
+
     public ICommand ChangeTab { get; }
 
-    void OnChangeTabExecuted(object p)
+    void OnChangeTabExecuted(object? p)
     {
         if (p == null)
         {
@@ -133,11 +159,61 @@ public class MainWindowVM : BaseVM
 
     #endregion
 
+    #region Создать новоую группу
+
+    /// <summary>
+    /// Создать новую группу
+    /// </summary>
+    public ICommand CreateNewGroupCmd { get; }
+
+    void OnCreateNewGroupCmdExecuted(object p)
+    {
+        var groupMaxIndex = Groups.Count + 1;
+        var g = new Group()
+        {
+            Name = $"Group {groupMaxIndex}",
+            Students = new ObservableCollection<Student>()
+        };
+        Groups.Add(g);
+    }
+
+    bool CanCreateNewGroupCmdExecuted(object p) => true;
+
+    #endregion
+
+    #region Удалить группу
+
+    /// <summary>
+    /// Создать группу
+    /// </summary>
+    public ICommand DeleteGroupCmd { get; }
+
+    void OnDeleteGroupCmdExecuted(object p)
+    {
+        if (p is Group g)
+        {
+            var indexG = Groups.IndexOf(g);
+            
+            Groups.Remove(g);
+
+            if (indexG < Groups.Count)
+            {
+                SelectGroup = Groups[indexG];
+            }
+        }
+        
+    }
+
+    bool CanDeleteGroupCmdExecuted(object p) => p is Group g && Groups.Contains(g);
+
+    #endregion
+
+    #endregion
+
     #region Свойства
 
     //создаем свойство и подцепляем к нему визуальный эл
     private string title;
-
 
     /// <summary>
     /// Заголовок окна
@@ -157,8 +233,10 @@ public class MainWindowVM : BaseVM
         set => Set(ref title, value);
     }
 
+    /// <summary>
+    /// Сатус Ползунка
+    /// </summary>
     private int status;
-
 
     /// <summary>
     /// Сатус Ползунка
@@ -179,6 +257,9 @@ public class MainWindowVM : BaseVM
     //если не планируется в будущем удалять или добавлять точки то можно ограничится IEnumerable 
     //если планируется то ObservableColection
 
+    /// <summary>
+    /// Тестовый набор данных для визуализации графиков
+    /// </summary>
     private IEnumerable<DataPoint> testDataPoints;
 
 
@@ -193,7 +274,10 @@ public class MainWindowVM : BaseVM
 
     #endregion
 
-    private int selectedPageIndex = 3;
+    /// <summary>
+    /// ВЫбранная вкладка
+    /// </summary>
+    private int selectedPageIndex = 2;
 
     /// <summary>
     /// ВЫбранная вкладка
@@ -228,15 +312,15 @@ public class MainWindowVM : BaseVM
 
     #region Выбранная группа
 
-    private Group selecGroup;
+    private Group selectGroup;
 
     /// <summary>
     /// ВЫбранная группа
     /// </summary>
     public Group SelectGroup
     {
-        get => selecGroup;
-        set => Set(ref selecGroup, value);
+        get => selectGroup;
+        set => Set(ref selectGroup, value);
     }
 
     #endregion
@@ -248,7 +332,7 @@ public class MainWindowVM : BaseVM
     //создадим список любых эл
     public object[] CompositeCollection { get; }
 
-    
+
     private object selectedCompositeValue;
 
     /// <summary>
