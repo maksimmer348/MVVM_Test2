@@ -65,7 +65,6 @@
             </StatusBar>
             <!-- по сути это список а TabItem это элменты списка -->
             <TabControl SelectedIndex="{Binding SelectedPageIndex}">
-
                 <TabItem HorizontalAlignment="Center">
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
@@ -183,7 +182,7 @@
                             <!-- GridLinesVisibility="Vertical" показывать только верт линии -->
                             <!-- AlternatingRowBackground задает цвет фона в чередующейся строках -->
                             <DataGrid ItemsSource="{Binding SelectGroup.Students}" AutoGenerateColumns="False"
-                                      CanUserDeleteRows="False" GridLinesVisibility="Vertical"
+                                      CanUserDeleteRows="False" CanUserAddRows="False" GridLinesVisibility="Vertical"
                                       VerticalGridLinesBrush="Blue"
                                       AlternatingRowBackground="LightBlue">
                                 <!-- тк к свойству ItemsSource текущего датаггрида привзяанаы студенты выбранной группы, то  -->
@@ -271,23 +270,41 @@
                             <ColumnDefinition Width="250" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <!-- добявляем в ItemsSource список разнородных эл, SelectedItem будет установлен в свойство SelectedCompositeValue -->
-                        <!-- тк ListBox не знает как отбражать даные он просто вызывает у всех обьектов в себя добавленных ToString -->
-                        <ListBox ItemsSource="{Binding CompositeCollection}"
-                                 SelectedItem="{Binding SelectedCompositeValue}">
-                            <!--ItemTemplate конкретизиурет как будет отбражатся конкретные типы данных -->
-                            <ListBox.ItemTemplate>
-                                <!-- DataTemplate внутри него будет применена описаная нами разметка, -->
-                                <!-- чтобы нарисовать этот эл на экране (те он описывает визуальную структуру обьекта)-->
-                                <DataTemplate>
-                                    <!-- описываем как надо визуализировать наши обоьекты -->
-                                    <TextBlock Text="{Binding}" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        <!-- при использтвании ресурсов нельзя использовать такие штуки как ItemTemplate например тк -->
+                        <!-- он переопределитьи отбражаемы значения по своему те исользует ToString к каждому эл -->
+                        
+                        <!-- DataTemplate DataType="{x:Type local:Group}" позволяет использовать заданные свойсвта классов из -->
+                        <!-- списка разнордных элментов в данном случае если встреится эл Group то всеми дочерними элментами Grid -->
+                        <!-- будет отображено Group.Name вместо применения ToString по умолчанию-->
+                        <Grid.Resources>
+                            <DataTemplate DataType="{x:Type local:Group}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                            <!-- аналогично пример с Group в случае эл типа Student будет покзаано Student.Name вметсо ToString -->
+                            <DataTemplate DataType="{x:Type local:Student}">
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </Grid.Resources>
+                        <GroupBox Header="Элементы">
+                            <!-- добявляем в ItemsSource список разнородных эл, SelectedItem будет установлен в свойство SelectedCompositeValue -->
+                            <!-- тк ListBox не знает как отбражать даные он просто вызывает у всех обьектов в себя добавленных ToString -->
+                            <ListBox ItemsSource="{Binding CompositeCollection}"
+                                     SelectedItem="{Binding SelectedCompositeValue}">
+                                <!-- ~1~ItemTemplate конкретизиурет как будет отбражатся конкретные типы данных @1@ -->
+                                <!-- <ListBox.ItemTemplate> -->
+                                <!--     ~1~ DataTemplate внутри него будет применена описаная нами разметка, @1@ -->
+                                <!--     ~1~ чтобы нарисовать этот эл на экране (те он описывает визуальную структуру обьекта)@1@ -->
+                                <!--     <DataTemplate> -->
+                                <!--         ~1~ описываем как надо визуализировать наши обоьекты @1@ -->
+                                <!--         <TextBlock Text="{Binding  }" /> -->
+                                <!--     </DataTemplate> -->
+                                <!-- </ListBox.ItemTemplate> -->
+                            </ListBox>
+                        </GroupBox>
                         <GroupBox Header="Выбарнный элемент" Grid.Column="1">
-                            <!-- теперь при выборе соотвествующего эл SelectedCompositeValue в групбоксе будут отбражатся их имена -->
-                            <!-- тк ContentControl не знает как отбражать даные он просто вызывает у всех обьектов в себя добавленных ToString -->
+                            <!--ContentControl с его помощьюю теперь при выборе соотвествующего эл SelectedCompositeValue в групбоксе будут -->
+                            <!-- отбражатся их имена тк ContentControl не знает как отбражать даные он просто вызывает у всех обьектов в себя  -->
+                            <!-- добавленных ToString (Student.ToString(), елси переопредеить это у студента можно полуиччить другое значение)-->
                             <ContentControl Content="{Binding SelectedCompositeValue}">
                             </ContentControl>
                         </GroupBox>

@@ -11,8 +11,13 @@ public class Group
     // //ICollection тут для свободы выобра те ту может быть списко может быыть массив может быть
     // //observabeColection
     // public ICollection<Student> Students { get; set; }
-    
-   
+
+
     // базовый интерфейс всех универсальных последовательных списокв 
     public IList<Student> Students { get; set; }
+
+    // public override string ToString()
+    // {
+    //     return this.GetHashCode().ToString();
+    // }
 }

@@ -193,7 +193,7 @@ public class MainWindowVM : BaseVM
 
     #endregion
 
-    private int selectedPageIndex = 2;
+    private int selectedPageIndex = 3;
 
     /// <summary>
     /// ВЫбранная вкладка
