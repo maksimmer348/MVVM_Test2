@@ -30,12 +30,6 @@ public class MainWindowVM : BaseVM
 
     public MainWindowVM()
     {
-        Console.WriteLine();
-
-        int i = 10;
-
-        Console.WriteLine(i);
-
         #region Команды
 
         CloseAppCmd = new ActionCommand(OnCloseAppCmdExecuted, CanCloseAppCmdExecuted);
@@ -210,6 +204,8 @@ public class MainWindowVM : BaseVM
 
     #endregion
 
+    
+    
     #region Свойства
 
     //создаем свойство и подцепляем к нему визуальный эл
@@ -233,6 +229,7 @@ public class MainWindowVM : BaseVM
         set => Set(ref title, value);
     }
 
+    
     /// <summary>
     /// Сатус Ползунка
     /// </summary>
@@ -277,7 +274,7 @@ public class MainWindowVM : BaseVM
     /// <summary>
     /// ВЫбранная вкладка
     /// </summary>
-    private int selectedPageIndex = 2;
+    private int selectedPageIndex = 3;
 
     /// <summary>
     /// ВЫбранная вкладка
