@@ -345,7 +345,10 @@
 
                                 <DockPanel DockPanel.Dock="Top">
                                     <fa:ImageAwesome Height="12" Icon="Solid_Search" Margin="0,3,3,3" />
-                                    <TextBox Margin="0,3,0,3" />
+                                    <!-- UpdateSourceTrigger=PropertyChanged будет изменять StudentFilterText, не только при поттере фокуса окна  -->
+                                    <!-- но при любом изменении текста -->
+                                    <TextBox Margin="0,3,0,3"  Text="{Binding StudentFilterText, 
+                                    UpdateSourceTrigger=PropertyChanged}"/>
                                 </DockPanel>
 
                                 <!-- DataGrid какие виды колонок нужны какие параметрвы как каим видам их привязвать и тд  -->
@@ -357,7 +360,7 @@
                                 <!-- GridLinesVisibility="Vertical" показывать только верт линии -->
                                 <!-- AlternatingRowBackground задает цвет фона в чередующейся строках -->
 
-                                <DataGrid ItemsSource="{Binding SelectGroup.Students}" AutoGenerateColumns="False"
+                                <DataGrid ItemsSource="{Binding SelectedGroupStudents}" AutoGenerateColumns="False"
                                           CanUserDeleteRows="False" CanUserAddRows="False"
                                           GridLinesVisibility="Vertical"
                                           VerticalGridLinesBrush="Blue"

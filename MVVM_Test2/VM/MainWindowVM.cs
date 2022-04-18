@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
+using OxyPlot;
 
 namespace MVVM_Test2;
 
@@ -13,33 +16,19 @@ namespace MVVM_Test2;
 /// </summary>
 public class MainWindowVM : BaseVM
 {
-    #region Description
-
-    private int neeee;
-
-    /// <summary>
-    /// Summary
-    /// </summary>
-    public int Neeee
-    {
-        get => neeee;
-        set => Set(ref neeee, value);
-    }
-
-    #endregion
 
     public MainWindowVM()
     {
         #region Команды
 
         CloseAppCmd = new ActionCommand(OnCloseAppCmdExecuted, CanCloseAppCmdExecuted);
-        
+
         ChangeTab = new ActionCommand(OnChangeTabExecuted, CanChangeTabExecuted);
 
         CreateNewGroupCmd = new ActionCommand(OnCreateNewGroupCmdExecuted, CanCreateNewGroupCmdExecuted);
 
         DeleteGroupCmd = new ActionCommand(OnDeleteGroupCmdExecuted, CanDeleteGroupCmdExecuted);
-        
+
         #endregion
 
         #region График
@@ -67,8 +56,8 @@ public class MainWindowVM : BaseVM
         var students = Enumerable.Range(1, 10).Select(_ => new Student()
         {
             Name = $"Name {studentIndex}",
-            Surname = $"Surname {studentIndex}",
-            Patronymic = $"Patronymic {studentIndex++}",
+            Surname = $"Surname {studentIndex++}",
+            Patronymic = $"Patronymic {studentIndex}",
             Birthday = DateTime.Now,
             Rating = 0,
             Description = $"Описание {studentIndex}"
@@ -100,7 +89,11 @@ public class MainWindowVM : BaseVM
         dataList.Add(group.Students[0]);
 
         this.CompositeCollection = dataList.ToArray();
+
+        //подписываем на событие фильтрации метод - шаблон фильтрования
+        selectedGroupStudents.Filter += OnStudentFiltred;
     }
+
 
     #region Команды
 
@@ -187,7 +180,7 @@ public class MainWindowVM : BaseVM
         if (p is Group g)
         {
             var indexG = Groups.IndexOf(g);
-            
+
             Groups.Remove(g);
 
             if (indexG < Groups.Count)
@@ -195,7 +188,6 @@ public class MainWindowVM : BaseVM
                 SelectGroup = Groups[indexG];
             }
         }
-        
     }
 
     bool CanDeleteGroupCmdExecuted(object p) => p is Group g && Groups.Contains(g);
@@ -204,8 +196,7 @@ public class MainWindowVM : BaseVM
 
     #endregion
 
-    
-    
+
     #region Свойства
 
     //создаем свойство и подцепляем к нему визуальный эл
@@ -229,7 +220,7 @@ public class MainWindowVM : BaseVM
         set => Set(ref title, value);
     }
 
-    
+
     /// <summary>
     /// Сатус Ползунка
     /// </summary>
@@ -317,8 +308,83 @@ public class MainWindowVM : BaseVM
     public Group SelectGroup
     {
         get => selectGroup;
-        set => Set(ref selectGroup, value);
+        //здесь наглядно можно увидеть как, одно свойство менят другое с помощью конситуркции Set(ref selectGroup, value)).
+        //в set совйстве SelectGroup вызываем OnPropertyChanged друго совйства, тем самым изменения в первом свойстве
+        //полвекут за собой изменения и во второе если первое свойсвто изменени не будет то и второе не изменится
+        set
+        {
+            //если изменилось значение выбраной группы те был выбрана дурагя группа
+            if (!Set(ref selectGroup, value)) return;
+            //положим в данные CollectionViewSource список сутдентов из этой выыбранной группы
+            selectedGroupStudents.Source = value?.Students;
+            //и уведимим о изменнеии SelectedGroupStudents свойства чтобы оно обновилось на форме
+            OnPropertyChanged(nameof(SelectedGroupStudents));
+        }
     }
+
+    #endregion
+
+    #region Текст фильтра студентов
+
+    private string studentFilterText;
+
+    /// <summary>
+    /// Teкст фильтра студентов, сюда будет попадать тот текст кторй мы должны отфильтвроать
+    /// </summary>
+    public string StudentFilterText
+    {
+        get => studentFilterText;
+        set
+        {
+            //если текст в привязаном к этому совйтву тектбоксе не изменлся то return, елси нет
+            if (!Set(ref studentFilterText, value)) return;
+            //тогда повтороно создаем прдаствавление
+            selectedGroupStudents.View.Refresh();
+        }
+    }
+
+    #endregion
+
+
+    #region Фильтрация студентов
+
+    //метод которрый будет выызывватся при фильтрации студентов из выбранной группыы selectedGroupStudents.Filter
+    private void OnStudentFiltred(object sender, FilterEventArgs e)
+    {
+        var filterText = studentFilterText;
+
+        if (string.IsNullOrWhiteSpace(filterText))
+        {
+            return;
+        }
+
+        //если фильтруется записи которые != студент или если у студента нет имени
+        if (!(e.Item is Student s) || string.IsNullOrWhiteSpace(s.Name) || string.IsNullOrEmpty(s.Surname))
+        {
+            //скрываем все эти записи
+            e.Accepted = false;
+            return;
+        }
+
+        //если фильтурется запись кторая == студент и если хоть имя фамиилия или отчество содержит
+        //текст из filterText то мы оставляем эту запись в покое пропуская по сути
+        if (s.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
+        if (s.Surname.Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
+        if (s.Patronymic.Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
+
+        //если имя фамилия или отчемвто не содержат текст из фильтра мы удаялем эту запись из представления
+        e.Accepted = false;
+    }
+
+    //
+    //с помощью этого эл можно выводить в представление отфильтроване эл
+    private readonly CollectionViewSource selectedGroupStudents = new();
+
+    /// <summary>
+    /// Выбраные студенты из выбранной группы
+    /// </summary>
+    public ICollectionView SelectedGroupStudents => selectedGroupStudents?.View;
+    //
 
     #endregion
 
