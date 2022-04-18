@@ -365,6 +365,9 @@
                                           GridLinesVisibility="Vertical"
                                           VerticalGridLinesBrush="Blue"
                                           AlternatingRowBackground="LightBlue">
+                                    <DataGrid.GroupStyle>
+                                        <GroupStyle/>
+                                    </DataGrid.GroupStyle>
                                     <!-- тк к свойству ItemsSource текущего датаггрида привзяанаы студенты выбранной группы, то  -->
                                     <!-- что является типом данных внутри датагрид -->
                                     <DataGrid.Columns>

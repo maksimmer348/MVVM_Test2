@@ -16,7 +16,7 @@ namespace MVVM_Test2;
 /// </summary>
 public class MainWindowVM : BaseVM
 {
-
+    
     public MainWindowVM()
     {
         #region Команды
@@ -76,7 +76,8 @@ public class MainWindowVM : BaseVM
 
         //дальше разместим колллекцию в observable тем самым оно создаство гораздо быстрее
         Groups = new ObservableCollection<Group>(groups);
-
+        
+        
 
         var dataList = new List<object>();
 
@@ -92,6 +93,13 @@ public class MainWindowVM : BaseVM
 
         //подписываем на событие фильтрации метод - шаблон фильтрования
         selectedGroupStudents.Filter += OnStudentFiltred;
+        
+        //соритируем элементы списка студентов вбранной группы основываясь на имени студентов,
+        // ListSortDirection.Descending - это значит что сортиировку будет произведена в обртаном порядке
+       selectedGroupStudents.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Descending));
+        
+        // //группировка студнетов по имени в отдельных ячейках
+        // selectedGroupStudents.GroupDescriptions.Add(new PropertyGroupDescription("Name"));
     }
 
 
